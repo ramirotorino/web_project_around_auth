@@ -1,0 +1,123 @@
+.profile {
+  margin: 0 auto;
+  padding-top: 40px;
+  padding-bottom: 50px;
+  display: flex;
+  max-width: 880px;
+  justify-content: space-between;
+}
+
+.profile__photo {
+  width: 120px;
+  min-width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover; /* Asegura que la imagen se adapte correctamente */
+  position: relative;
+}
+
+.profile__avatar-container {
+  position: relative;
+  width: fit-content;
+  margin: auto;
+}
+
+.profile__avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  transition: opacity 0.3s ease; /* Transición para el efecto de oscurecimiento */
+}
+
+.profile__avatar-container:hover .profile__avatar {
+  opacity: 0.2; /* Oscurece la imagen al pasar el cursor */
+}
+
+.profile__avatar-edit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: hsla(0, 0%, 0%, 0.8); /* Fondo oscuro semitransparente */
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0; /* Oculto inicialmente */
+  transition: opacity 0.3s ease; /* Transición suave */
+  cursor: pointer;
+}
+
+.profile__avatar-container:hover .profile__avatar-edit {
+  opacity: 1; /* Muestra el ícono al pasar el cursor */
+}
+
+.profile__avatar-edit img {
+  width: 15px;
+  height: 15px;
+  pointer-events: none; /* El clic no afecta al ícono, solo al contenedor */
+}
+
+.profile__info {
+  display: flex;
+  padding-left: 30px;
+  padding-right: 168px;
+}
+
+.profile__info-text {
+  align-self: center;
+}
+
+.profile__info-name {
+  margin: 0px;
+  font-size: 42px;
+  line-height: 56px;
+  font-weight: 500;
+  padding-right: 16px;
+}
+
+.profile__info-about {
+  margin: 0px;
+  font-size: 18px;
+  line-height: 22px;
+  padding-right: 17px;
+}
+
+.profile__info-edit {
+  width: 24px;
+  height: 24px;
+  align-self: center;
+  background-color: #000;
+  border: 2px solid #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.profile__info-edit:hover {
+  opacity: 0.6;
+}
+
+.profile__info-edit-pencil {
+  width: 10px;
+  height: 10px;
+}
+
+.profile__add-img {
+  width: 150px;
+  height: 50px;
+  align-self: center;
+  background-color: #000;
+  border: 2px solid #fff;
+  background: url(../images/AddButton.svg) center no-repeat;
+  background-size: 22px 22px;
+  cursor: pointer;
+}
+
+.profile__add-img:hover {
+  opacity: 60%;
+}
