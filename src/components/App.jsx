@@ -3,6 +3,8 @@ import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import api from "../utils/api"; // ✅ Importar API
+import { login, register } from "../utils/auth.js";
+
 import { CurrentUserContext } from "../contexts/CurrentUserContext"; // ✅ Importar contexto
 
 function App() {

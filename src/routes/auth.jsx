@@ -2,7 +2,8 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import SignIn from "../pages/SignIn";
 import SignUp from "../pages/SignUp";
-import App from "../App";
+
+import App from "../components/App.jsx";
 
 // Simulación de autenticación (debes reemplazar esto con tu lógica real)
 const isAuthenticated = () => {
