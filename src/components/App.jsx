@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Routes, Route, useNavigate } from "react-router-dom";
-
 import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
@@ -23,6 +22,7 @@ function App() {
         navigate("/");
       })
       .catch(() => {
+        console.warn("Sesión inválida o expirada.");
         localStorage.removeItem("token"); // ✅ Eliminar token inválido
         navigate("/signin");
       });
@@ -30,29 +30,34 @@ function App() {
 
   useEffect(() => {
     setIsLoading(true); // ✅ Activa el estado de carga antes de la solicitud
-
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, cardsData]) => {
         setCurrentUser(userData); // ✅ Guardar datos del usuario
         setCards(cardsData); // ✅ Guardar tarjetas
       })
-      .catch((err) => console.error("Error al obtener los datos:", err))
+      .catch(() => console.warn("Error al obtener los datos."))
       .finally(() => setIsLoading(false)); // ✅ Desactiva el estado de carga cuando todo termine
   }, []);
 
   // ✅ Nueva función para manejar el inicio de sesión
   const handleLogin = (email, password) => {
-    return login(email, password).then((data) => {
-      checkToken().then((userData) => {
-        setCurrentUser(userData);
-        navigate("/");
-      });
-    });
+    return login(email, password)
+      .then(() => {
+        checkToken().then((userData) => {
+          setCurrentUser(userData);
+          navigate("/");
+        });
+      })
+      .catch(() =>
+        alert("Error en el inicio de sesión. Verifica tus credenciales.")
+      );
   };
 
   // ✅ Nueva función para manejar el registro
   const handleRegister = (email, password) => {
-    return register(email, password);
+    return register(email, password).catch(() => {
+      alert("Error en el registro. Intenta nuevamente.");
+    });
   };
 
   // Función para actualizar el usuario en la API
