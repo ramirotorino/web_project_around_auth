@@ -33,8 +33,10 @@ export const login = (email, password) => {
     });
 };
 
-// ✅ Nueva función para verificar el token del usuario autenticado
-export const checkToken = (token) => {
+export const checkToken = () => {
+  const token = localStorage.getItem("token");
+  if (!token) return Promise.reject("No token found");
+
   return fetch(`${BASE_URL}/users/me`, {
     method: "GET",
     headers: {
@@ -43,7 +45,8 @@ export const checkToken = (token) => {
     },
   }).then((res) => {
     if (!res.ok) {
-      return res.json().then((err) => Promise.reject(err)); // Manejo de errores 400 y 401
+      localStorage.removeItem("token"); // ✅ Eliminar token si es inválido
+      return res.json().then((err) => Promise.reject(err));
     }
     return res.json();
   });

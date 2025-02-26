@@ -34,7 +34,7 @@ root.render(
           }
         />
         <Route
-          path="/"
+          path="*"
           element={
             <ProtectedRoute>
               <App />

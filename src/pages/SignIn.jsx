@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { login } from "../utils/auth.js";
 import "../blocks/login.css"; // Asegurar que los estilos se importan
 
-const SignIn = () => {
+const SignIn = (onLogin) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();

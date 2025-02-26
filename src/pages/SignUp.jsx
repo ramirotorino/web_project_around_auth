@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { register } from "../utils/auth.js";
 import "../blocks/register.css"; // Asegurar que los estilos se importan correctamente
 
-const SignUp = () => {
+const SignUp = (onRegister) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();

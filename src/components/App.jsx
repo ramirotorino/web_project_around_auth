@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
+
 import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
-import api from "../utils/api"; // ✅ Importar API
+import SignIn from "../pages/SignIn.jsx";
+import SignUp from "../pages/SignUp.jsx";
+import api from "../utils/api";
 import { login, register, checkToken } from "../utils/auth.js";
-
 import { CurrentUserContext } from "../contexts/CurrentUserContext"; // ✅ Importar contexto
 
 function App() {
@@ -15,14 +17,15 @@ function App() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      checkToken(token)
-        .then((userData) => {
-          setCurrentUser(userData);
-        })
-        .catch(() => localStorage.removeItem("token"));
-    }
+    checkToken()
+      .then((userData) => {
+        setCurrentUser(userData);
+        navigate("/");
+      })
+      .catch(() => {
+        localStorage.removeItem("token"); // ✅ Eliminar token inválido
+        navigate("/signin");
+      });
   }, []);
 
   useEffect(() => {
@@ -40,7 +43,7 @@ function App() {
   // ✅ Nueva función para manejar el inicio de sesión
   const handleLogin = (email, password) => {
     return login(email, password).then((data) => {
-      checkToken(data.token).then((userData) => {
+      checkToken().then((userData) => {
         setCurrentUser(userData);
         navigate("/");
       });
@@ -52,7 +55,7 @@ function App() {
     return register(email, password);
   };
 
-  // ✅ Función para actualizar el usuario en la API
+  // Función para actualizar el usuario en la API
   const handleUpdateUser = (data) => {
     api
       .updateUserInfo(data)
@@ -64,7 +67,7 @@ function App() {
       );
   };
 
-  // ✅ Nueva función para actualizar el avatar
+  // función para actualizar el avatar
   const handleUpdateAvatar = (data) => {
     api
       .updateAvatar(data)
@@ -74,8 +77,6 @@ function App() {
       .catch((error) => console.error("Error al actualizar el avatar:", error));
   };
 
-  // ✅ Función para manejar la adición de una nueva tarjeta
-  // ✅ Asegurar que se envían los datos correctos a la API
   const handleAddPlaceSubmit = (cardData) => {
     setIsLoading(true);
     return api
@@ -122,12 +123,26 @@ function App() {
     >
       <div className="page">
         <Header />
-        <Main
-          cards={cards} // ✅ Pasar tarjetas a `Main`
-          onAddPlaceSubmit={handleAddPlaceSubmit} // ✅ Pasar función de añadir tarjetas
-          onCardDelete={handleCardDelete}
-          onCardLike={handleCardLike}
-        />
+        <Routes>
+          {/* ✅ Se agregan las rutas de autenticación */}
+          <Route
+            path="/signup"
+            element={<SignUp onRegister={handleRegister} />}
+          />
+          <Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
+          {/* ✅ Mantiene tu estructura original de `Main` */}
+          <Route
+            path="*"
+            element={
+              <Main
+                cards={cards}
+                onAddPlaceSubmit={handleAddPlaceSubmit}
+                onCardDelete={handleCardDelete}
+                onCardLike={handleCardLike}
+              />
+            }
+          />
+        </Routes>
         <Footer />
       </div>
     </CurrentUserContext.Provider>
