@@ -7,7 +7,12 @@ export const register = (email, password) => {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
-  }).then((res) => (res.ok ? res.json() : Promise.reject(res.statusText)));
+  }).then((res) => {
+    if (!res.ok) {
+      return res.json().then((err) => Promise.reject(err)); // Manejo de error detallado
+    }
+    return res.json();
+  });
 };
 
 export const login = (email, password) => {
@@ -16,7 +21,12 @@ export const login = (email, password) => {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password }),
   })
-    .then((res) => (res.ok ? res.json() : Promise.reject(res.statusText)))
+    .then((res) => {
+      if (!res.ok) {
+        return res.json().then((err) => Promise.reject(err)); // Manejo de errores 400 y 401
+      }
+      return res.json();
+    })
     .then((data) => {
       localStorage.setItem("token", data.token); // ✅ Guardar token en localStorage
       return data;
@@ -31,5 +41,10 @@ export const checkToken = (token) => {
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  }).then((res) => (res.ok ? res.json() : Promise.reject(res.statusText)));
+  }).then((res) => {
+    if (!res.ok) {
+      return res.json().then((err) => Promise.reject(err)); // Manejo de errores 400 y 401
+    }
+    return res.json();
+  });
 };
