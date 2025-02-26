@@ -4,17 +4,17 @@ import { Link, useNavigate } from "react-router-dom";
 import { register } from "../utils/auth.js";
 import "../blocks/register.css"; // Asegurar que los estilos se importan correctamente
 
-const SignUp = ({ onRegister }) => {
+const SignUp = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onRegister(email, password)
+    register(email, password)
       .then(() => {
         alert("Registro exitoso");
-        navigate("/signin"); // Redirige a inicio de sesión tras registrarse
+        navigate("/signin");
       })
       .catch(() => alert("Error en el registro"));
   };

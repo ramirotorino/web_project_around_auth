@@ -1,16 +1,29 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import Header from "./Header/Header";
 import Main from "./Main/Main";
 import Footer from "./Footer/Footer";
 import api from "../utils/api"; // ✅ Importar API
-import { login, register } from "../utils/auth.js";
+import { login, register, checkToken } from "../utils/auth.js";
 
 import { CurrentUserContext } from "../contexts/CurrentUserContext"; // ✅ Importar contexto
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null); // ✅ Estado para el usuario actual
   const [cards, setCards] = useState([]); // ✅ Estado de tarjetas
-  const [isLoading, setIsLoading] = useState(false); // ✅ Estado global para la carga
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      checkToken(token)
+        .then((userData) => {
+          setCurrentUser(userData);
+        })
+        .catch(() => localStorage.removeItem("token"));
+    }
+  }, []);
 
   useEffect(() => {
     setIsLoading(true); // ✅ Activa el estado de carga antes de la solicitud
@@ -23,6 +36,21 @@ function App() {
       .catch((err) => console.error("Error al obtener los datos:", err))
       .finally(() => setIsLoading(false)); // ✅ Desactiva el estado de carga cuando todo termine
   }, []);
+
+  // ✅ Nueva función para manejar el inicio de sesión
+  const handleLogin = (email, password) => {
+    return login(email, password).then((data) => {
+      checkToken(data.token).then((userData) => {
+        setCurrentUser(userData);
+        navigate("/");
+      });
+    });
+  };
+
+  // ✅ Nueva función para manejar el registro
+  const handleRegister = (email, password) => {
+    return register(email, password);
+  };
 
   // ✅ Función para actualizar el usuario en la API
   const handleUpdateUser = (data) => {

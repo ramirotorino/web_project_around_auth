@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
 import { login } from "../utils/auth.js";
 import "../blocks/login.css"; // Asegurar que los estilos se importan
 
-const SignIn = ({ onLogin }) => {
+const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onLogin(email, password)
+    login(email, password)
       .then(() => navigate("/"))
       .catch(() => alert("Error al iniciar sesión"));
   };
