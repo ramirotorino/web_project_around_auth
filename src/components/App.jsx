@@ -13,20 +13,37 @@ function App() {
   const [currentUser, setCurrentUser] = useState(null);
   const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [isUserLoaded, setIsUserLoaded] = useState(false);
+  const [isFetchingUser, setIsFetchingUser] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    checkToken()
-      .then((userData) => {
-        setCurrentUser(userData);
-        navigate("/");
-      })
-      .catch(() => {
-        console.warn("Sesión inválida o expirada.");
-        localStorage.removeItem("token");
-        navigate("/signin");
-      });
-  }, []);
+    const token = localStorage.getItem("token");
+    if (token && !isFetchingUser && !currentUser) {
+      setIsFetchingUser(true);
+      checkToken()
+        .then(() => {
+          if (!currentUser) {
+            // ✅ Evita doble llamada
+            return api.getUserInfo();
+          }
+          return null;
+        })
+        .then((fullUserData) => {
+          if (fullUserData) {
+            setCurrentUser(fullUserData);
+            localStorage.setItem("currentUser", JSON.stringify(fullUserData));
+          }
+        })
+        .catch(() => {
+          console.warn("Sesión inválida o expirada.");
+          localStorage.removeItem("token");
+          localStorage.removeItem("currentUser");
+          navigate("/signin");
+        })
+        .finally(() => setIsFetchingUser(false));
+    }
+  }, [navigate, isFetchingUser, currentUser]);
 
   useEffect(() => {
     setIsLoading(true);
@@ -41,9 +58,20 @@ function App() {
 
   const handleLogin = (data) => {
     console.log("Login exitoso", data);
-    localStorage.setItem("token", data.token); // Store the token
-    //setCurrentUser(data.user); // Assuming the user data is returned
-    navigate("/");
+    localStorage.setItem("token", data.token);
+    navigate("/"); // ✅ Redirigir inmediatamente después del login
+
+    setIsFetchingUser(true);
+    api
+      .getUserInfo()
+      .then((fullUserData) => {
+        setCurrentUser(fullUserData);
+        localStorage.setItem("currentUser", JSON.stringify(fullUserData));
+      })
+      .catch(() => {
+        console.error("Error al obtener datos del usuario después de login.");
+      })
+      .finally(() => setIsFetchingUser(false));
   };
 
   const handleRegister = (email, password) => {
@@ -59,11 +87,19 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    const storedUser = localStorage.getItem("currentUser");
+    if (storedUser) {
+      setCurrentUser(JSON.parse(storedUser));
+    }
+  }, []);
+
   const handleUpdateUser = (data) => {
     api
       .updateUserInfo(data)
       .then((newData) => {
-        setCurrentUser(newData); // ✅ Actualizar estado global del usuario
+        setCurrentUser(newData);
+        localStorage.setItem("currentUser", JSON.stringify(newData));
       })
       .catch((error) =>
         console.error("Error al actualizar el usuario:", error)
@@ -74,7 +110,8 @@ function App() {
     api
       .updateAvatar(data)
       .then((newData) => {
-        setCurrentUser(newData); // ✅ Actualizar avatar en el estado global
+        setCurrentUser(newData);
+        localStorage.setItem("currentUser", JSON.stringify(newData));
       })
       .catch((error) => console.error("Error al actualizar el avatar:", error));
   };
