@@ -32,7 +32,7 @@ const SignIn = ({ onLogin }) => {
     login(email, password)
       .then((data) => {
         console.log("Login exitoso");
-        onLogin();
+        onLogin(data);
       })
       .catch((error) => {
         console.error("Error en login");

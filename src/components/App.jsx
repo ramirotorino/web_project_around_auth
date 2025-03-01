@@ -30,20 +30,20 @@ function App() {
 
   useEffect(() => {
     setIsLoading(true);
-    Promise.all([api.getUserInfo(), api.getInitialCards()])
-      .then(([userData, cardsData]) => {
-        setCurrentUser(userData); //  Guardar datos del usuario
-        setCards(cardsData); //  Guardar tarjetas
+    api
+      .getInitialCards()
+      .then((cardsData) => {
+        setCards(cardsData);
       })
-      .catch(() => console.warn("Error al obtener los datos."))
+      .catch((err) => console.error(err))
       .finally(() => setIsLoading(false));
   }, []);
 
   const handleLogin = (data) => {
     console.log("Login exitoso", data);
     localStorage.setItem("token", data.token); // Store the token
-    setCurrentUser(data.user); // Assuming the user data is returned
-    navigate("/", { replace: true });
+    //setCurrentUser(data.user); // Assuming the user data is returned
+    navigate("/");
   };
 
   const handleRegister = (email, password) => {
@@ -51,6 +51,13 @@ function App() {
       alert("Error en el registro. Intenta nuevamente.");
     });
   };
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      navigate("/");
+    }
+  }, [handleLogin]);
 
   const handleUpdateUser = (data) => {
     api

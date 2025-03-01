@@ -28,10 +28,10 @@ export const login = (email, password) => {
   })
     .then(handleResponse)
     .then((data) => {
-      if (data.token && data.user) {
+      if (data.token) {
         console.log("Token recibido y guardado:", data.token);
         localStorage.setItem("token", data.token);
-        return { token: data.token, user: data.user }; // Return token and user data
+        return { token: data.token }; // Return token and user data
       } else {
         return Promise.reject("No se recibió un token de autenticación.");
       }
