@@ -7,11 +7,11 @@ import SignIn from "../pages/SignIn.jsx";
 import SignUp from "../pages/SignUp.jsx";
 import api from "../utils/api";
 import { login, register, checkToken } from "../utils/auth.js";
-import { CurrentUserContext } from "../contexts/CurrentUserContext"; // ✅ Importar contexto
+import { CurrentUserContext } from "../contexts/CurrentUserContext";
 
 function App() {
-  const [currentUser, setCurrentUser] = useState(null); // ✅ Estado para el usuario actual
-  const [cards, setCards] = useState([]); // ✅ Estado de tarjetas
+  const [currentUser, setCurrentUser] = useState(null);
+  const [cards, setCards] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -23,44 +23,35 @@ function App() {
       })
       .catch(() => {
         console.warn("Sesión inválida o expirada.");
-        localStorage.removeItem("token"); // ✅ Eliminar token inválido
+        localStorage.removeItem("token");
         navigate("/signin");
       });
   }, []);
 
   useEffect(() => {
-    setIsLoading(true); // ✅ Activa el estado de carga antes de la solicitud
+    setIsLoading(true);
     Promise.all([api.getUserInfo(), api.getInitialCards()])
       .then(([userData, cardsData]) => {
-        setCurrentUser(userData); // ✅ Guardar datos del usuario
-        setCards(cardsData); // ✅ Guardar tarjetas
+        setCurrentUser(userData); //  Guardar datos del usuario
+        setCards(cardsData); //  Guardar tarjetas
       })
       .catch(() => console.warn("Error al obtener los datos."))
-      .finally(() => setIsLoading(false)); // ✅ Desactiva el estado de carga cuando todo termine
+      .finally(() => setIsLoading(false));
   }, []);
 
-  // ✅ Nueva función para manejar el inicio de sesión
-  const handleLogin = (email, password) => {
-    return login(email, password)
-      .then(() => {
-        checkToken().then((userData) => {
-          setCurrentUser(userData);
-          navigate("/");
-        });
-      })
-      .catch(() =>
-        alert("Error en el inicio de sesión. Verifica tus credenciales.")
-      );
+  const handleLogin = (data) => {
+    console.log("Login exitoso", data);
+    localStorage.setItem("token", data.token); // Store the token
+    setCurrentUser(data.user); // Assuming the user data is returned
+    navigate("/", { replace: true });
   };
 
-  // ✅ Nueva función para manejar el registro
   const handleRegister = (email, password) => {
     return register(email, password).catch(() => {
       alert("Error en el registro. Intenta nuevamente.");
     });
   };
 
-  // Función para actualizar el usuario en la API
   const handleUpdateUser = (data) => {
     api
       .updateUserInfo(data)
@@ -72,7 +63,6 @@ function App() {
       );
   };
 
-  // función para actualizar el avatar
   const handleUpdateAvatar = (data) => {
     api
       .updateAvatar(data)
@@ -129,13 +119,11 @@ function App() {
       <div className="page">
         <Header />
         <Routes>
-          {/* ✅ Se agregan las rutas de autenticación */}
           <Route
             path="/signup"
             element={<SignUp onRegister={handleRegister} />}
           />
           <Route path="/signin" element={<SignIn onLogin={handleLogin} />} />
-          {/* ✅ Mantiene tu estructura original de `Main` */}
           <Route
             path="*"
             element={

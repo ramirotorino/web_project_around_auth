@@ -2,25 +2,56 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import { login } from "../utils/auth.js";
-import "../blocks/login.css"; // Asegurar que los estilos se importan
+import InfoTooltip from "../components/InfoTooltip.jsx";
+import "../blocks/login.css";
 
-const SignIn = (onLogin) => {
+const SignIn = ({ onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [infoTooltip, setInfoTooltip] = useState({
+    isOpen: false,
+    isSuccess: false,
+    message: "",
+  });
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    if (!email.trim() || !password.trim()) {
+      setInfoTooltip({
+        isOpen: true,
+        isSuccess: false,
+        message: "Los campos de email y contraseña son obligatorios.",
+      });
+      return;
+    }
+
+    console.log("Enviando login con:", { email, password });
+
     login(email, password)
-      .then(() => navigate("/"))
-      .catch(() => alert("Error al iniciar sesión"));
+      .then((data) => {
+        console.log("Login exitoso");
+        onLogin();
+      })
+      .catch((error) => {
+        console.error("Error en login");
+        setInfoTooltip({
+          isOpen: true,
+          isSuccess: false,
+          message:
+            error.message || "Error al iniciar sesión. Intenta nuevamente.",
+        });
+      });
   };
 
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      navigate("/");
+    const token = localStorage.getItem("token");
+    if (token) {
+      console.log("Token encontrado en localStorage, redirigiendo...");
+      navigate("/", { replace: true });
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className="login-container">
@@ -49,6 +80,12 @@ const SignIn = (onLogin) => {
       <p className="login-register-link">
         ¿Aún no eres miembro? <Link to="/signup">Regístrate aquí</Link>
       </p>
+      <InfoTooltip
+        isOpen={infoTooltip.isOpen}
+        isSuccess={infoTooltip.isSuccess}
+        message={infoTooltip.message}
+        onClose={() => setInfoTooltip({ isOpen: false })}
+      />
     </div>
   );
 };

@@ -3,13 +3,13 @@
 const BASE_URL = "https://se-register-api.en.tripleten-services.com/v1";
 
 const handleResponse = (res) => {
-  if (!res.ok) {
-    return res.json().then((err) => {
-      console.error("Error en la API:", err.message || res.statusText); // ✅ No exponer detalles sensibles
-      return Promise.reject("Ocurrió un error. Intenta nuevamente.");
-    });
-  }
-  return res.json();
+  return res.json().then((data) => {
+    if (!res.ok) {
+      console.error("Error en la API:", data);
+      return Promise.reject(data.error || "Ocurrió un error inesperado.");
+    }
+    return data;
+  });
 };
 
 export const register = (email, password) => {
@@ -28,8 +28,13 @@ export const login = (email, password) => {
   })
     .then(handleResponse)
     .then((data) => {
-      localStorage.setItem("token", data.token); // ✅ Guardar token en localStorage
-      return data;
+      if (data.token && data.user) {
+        console.log("Token recibido y guardado:", data.token);
+        localStorage.setItem("token", data.token);
+        return { token: data.token, user: data.user }; // Return token and user data
+      } else {
+        return Promise.reject("No se recibió un token de autenticación.");
+      }
     });
 };
 

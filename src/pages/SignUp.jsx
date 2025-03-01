@@ -2,21 +2,36 @@ import React, { useState } from "react";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { register } from "../utils/auth.js";
-import "../blocks/register.css"; // Asegurar que los estilos se importan correctamente
+import InfoTooltip from "../components/InfoTooltip.jsx";
+import "../blocks/register.css";
 
 const SignUp = (onRegister) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [infoTooltip, setInfoTooltip] = useState({
+    isOpen: false,
+    isSuccess: false,
+    message: "",
+  });
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
     register(email, password)
       .then(() => {
-        alert("Registro exitoso");
-        navigate("/signin");
+        setInfoTooltip({
+          isOpen: true,
+          isSuccess: true,
+          message: "¡Correcto! Ya estás registrado.",
+        });
       })
-      .catch(() => alert("Error en el registro"));
+      .catch(() => {
+        setInfoTooltip({
+          isOpen: true,
+          isSuccess: false,
+          message: "Uy, algo salió mal. Por favor, inténtalo de nuevo.",
+        });
+      });
   };
 
   useEffect(() => {
@@ -52,6 +67,12 @@ const SignUp = (onRegister) => {
       <p className="register-login-link">
         ¿Ya tienes cuenta? <Link to="/signin">Inicia sesión aquí</Link>
       </p>
+      <InfoTooltip
+        isOpen={infoTooltip.isOpen}
+        isSuccess={infoTooltip.isSuccess}
+        message={infoTooltip.message}
+        onClose={() => setInfoTooltip({ isOpen: false })}
+      />
     </div>
   );
 };
