@@ -174,14 +174,15 @@
 
 /* Icono de éxito o error */
 .info-tooltip__icon {
-  width: 50px;
-  height: 50px;
+  width: 120px;
+  height: 120px;
   margin-bottom: 15px;
 }
 
 /* Mensaje de la ventana modal */
 .info-tooltip__message {
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: bold;
   color: #000;
   margin-bottom: 20px;
 }
@@ -189,10 +190,18 @@
 /* Botón de cierre de la ventana modal */
 .info-tooltip__close-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
+  width: 40px;
+  height: 40px;
+  top: -50px;
+  right: -40px;
   background: transparent;
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: white;
+}
+
+.info-tooltip__close-icon {
+  width: 40px;
+  height: 40px;
 }
