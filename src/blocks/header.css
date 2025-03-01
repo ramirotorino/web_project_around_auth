@@ -29,3 +29,22 @@
 .header__link--white {
   color: white;
 }
+
+.header__user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header__email {
+  color: white;
+  font-size: 14px;
+}
+
+.header__logout {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  font-size: 14px;
+}
