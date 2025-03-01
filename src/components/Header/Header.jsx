@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import logo from "../../images/logo.svg";
 
 const Header = () => {
   const isAuthenticated = localStorage.getItem("token") !== null;
@@ -11,16 +12,19 @@ const Header = () => {
   };
 
   return (
-    <header>
-      <h1>Mi Aplicación</h1>
-      {isAuthenticated ? (
-        <button onClick={handleLogout}>Cerrar Sesión</button>
-      ) : (
-        <nav>
-          <Link to="/signin">Iniciar Sesión</Link>
-          <Link to="/signup">Registrarse</Link>
-        </nav>
-      )}
+    <header className="header">
+      <img src={logo} alt="Logo de Around The U.S." className="header__logo" />
+      <nav className="header__nav">
+        {location.pathname === "/signin" ? (
+          <Link to="/signup" className="header__link">
+            Regístrate
+          </Link>
+        ) : location.pathname === "/signup" ? (
+          <Link to="/signin" className="header__link">
+            Iniciar sesión
+          </Link>
+        ) : null}
+      </nav>
     </header>
   );
 };

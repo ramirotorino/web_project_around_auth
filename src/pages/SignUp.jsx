@@ -65,7 +65,10 @@ const SignUp = (onRegister) => {
         </button>
       </form>
       <p className="register-login-link">
-        ¿Ya tienes cuenta? <Link to="/signin">Inicia sesión aquí</Link>
+        ¿Ya tienes cuenta?{" "}
+        <Link to="/signin" className="login-register-link">
+          Inicia sesión aquí
+        </Link>
       </p>
       <InfoTooltip
         isOpen={infoTooltip.isOpen}
