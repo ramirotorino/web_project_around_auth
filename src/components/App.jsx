@@ -57,7 +57,7 @@ function App() {
     if (token) {
       navigate("/");
     }
-  }, [handleLogin]);
+  }, []);
 
   const handleUpdateUser = (data) => {
     api
