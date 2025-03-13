@@ -1,7 +1,7 @@
 {
   "name": "web_project_around_auth",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "api/server.js",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -25,6 +25,7 @@
     "not op_mini all"
   ],
   "dependencies": {
+    "express": "^4.21.2",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.2.0"
